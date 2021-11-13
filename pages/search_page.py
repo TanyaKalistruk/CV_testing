@@ -1,3 +1,5 @@
+from selenium.webdriver.common.keys import Keys
+
 from pages.driver_wrapper import Wrapper
 
 SEARCH_INP_CSS = "input.gsfi"
@@ -15,11 +17,12 @@ class SearchPage(Wrapper):
         """Writes search request to input."""
         self.find_element_by_css(SEARCH_INP_CSS).send_keys(search_request)
 
-    def click_search_bth(self):
+    def send_search_request(self):
         """Clicks on Search button."""
-        self.find_element_by_css(SEARCH_BTH_CSS).click()
+        self.find_element_by_css(SEARCH_INP_CSS).send_keys(Keys.ENTER)
 
     def click_on_search_result_by_text(self, text: str):
+        """Clicks on button by text."""
         elements = self.find_elements_by_css(ELEMENTS_IN_SEARCH_CSS)
         for element in elements:
             if text in element.text:

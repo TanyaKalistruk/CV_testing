@@ -1,3 +1,4 @@
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -36,3 +37,7 @@ class Wrapper:
         #     mylogger.error(f"Element {selector} was not found during {timeout} timeout")
         # except NoSuchElementException:
         #     mylogger.error(f"Element {selector} not found")
+
+    def wait(self, timeout: int = 10):
+        """Waits for time specified in timeout variable."""
+        time.sleep(timeout)
