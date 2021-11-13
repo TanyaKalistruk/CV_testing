@@ -4,14 +4,23 @@ import os
 import numpy as np
 import cv2
 
+from utils.logger import logger
+
 
 class SearchObjectOnImage:
+    """Class with methods for searching object on the screen."""
+
+    log = logger()
 
     def __init__(self, path_to_query_image: str, path_to_train_image: str, threshold: float = 0.7):
+        self.path_to_query_image = path_to_query_image
+        self.path_to_train_image = path_to_train_image
         if not os.path.isfile(path_to_query_image):
-            sys.exit("Can not find a file on path '{0}'.".format(path_to_query_image))
+            self.log.error(f"Can not find a file on path '{path_to_query_image}'.")
+            sys.exit(f"Can not find a file on path '{path_to_query_image}'.")
         if not os.path.isfile(path_to_train_image):
-            sys.exit("Can not find a file on path '{0}'.".format(path_to_train_image))
+            self.log.error(f"Can not find a file on path '{path_to_train_image}'.")
+            sys.exit(f"Can not find a file on path '{path_to_train_image}'.")
         self.query_image = cv2.imread(path_to_query_image)
         self.train_image = cv2.imread(path_to_train_image)
         self.threshold = threshold
@@ -153,9 +162,15 @@ class SearchObjectOnImage:
 
     def search_obj_on_template(self):
         """Looking for matches on image."""
+        self.log.info(f"Processing query image {self.path_to_query_image} "
+                      f"on train image {self.path_to_train_image}.")
+        self.log.info(f"Threshold for searching {self.threshold}.")
+        self.log.info(f"For query image radius {self.get_query_img_radius()}, offset {self.get_query_img_offset()}.")
         result = self.find_matches()
         points = self.sort_points(result)
+        self.log.info(f"Draft points found: '{len(points)}'. first 10 points: '{points[:10]}'")
         sparsed_points = self.sparse_subset(points)
+        self.log.info(f"Sparsed points found: '{len(sparsed_points)}'. points: '{sparsed_points}'")
         self.convert_imgs_to_gray()
         for pt in sparsed_points:
             matches = self.match_descriptors(pt)
@@ -165,6 +180,10 @@ class SearchObjectOnImage:
             kp2, _ = self.sift_detect_train_img(pt)
             common_good_matches = self.get_common_good_matches(good_matches, kp1, kp2)
             self.is_point_accepted(pt, matches, good_matches, common_good_matches)
+        self.log.info(f"Accepted points found {len(self.accepted_points)}, "
+                      f"points: {[point['point'] for point in self.accepted_points]}")
+        self.log.info(f"Rejected points found {len(self.rejected_points)}, "
+                      f"points: {[point['point'] for point in self.rejected_points]}")
 
 
 def get_euclid_distance(point1: tuple, point2: tuple) -> float:
