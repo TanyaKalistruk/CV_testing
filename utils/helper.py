@@ -1,4 +1,5 @@
 """Helper methods for tests."""
+import configparser
 import os
 import re
 import sys
@@ -41,3 +42,10 @@ def verify_location(address: str):
     ob = SearchObjectOnImage(exp, actual)
     ob.search_obj_on_template()
     return len(ob.accepted_points) == 1
+
+
+def get_base_url_config() -> str:
+    """Get base url from config and return it."""
+    config = configparser.ConfigParser()
+    config.read('../configs/config.ini')
+    return config['base_configs']['base_url']
