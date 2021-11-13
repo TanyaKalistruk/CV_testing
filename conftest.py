@@ -1,6 +1,6 @@
 import pytest
 from selenium import webdriver
-
+from webdriver_manager.chrome import ChromeDriverManager
 from constants.search_request_constants import GOOGLE_MAPS
 from pages.base_page import BasePage
 
@@ -8,7 +8,7 @@ from pages.base_page import BasePage
 @pytest.fixture(scope="session")
 def app():
     """Fixture with session scope that initiates BasePage."""
-    driver = webdriver.Chrome(r"C:\Users\Asus\Desktop\CV_testing\chromedriver.exe")
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.set_window_size(1490, 690)
     base_url = "https://www.google.com/"
     return BasePage(driver, base_url)
