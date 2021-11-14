@@ -4,3 +4,4 @@ pytest
 webdriver_manager
 logging
 inspect
+pillow

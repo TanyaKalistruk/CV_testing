@@ -12,9 +12,10 @@ class SearchObjectOnImage:
 
     log = logger()
 
-    def __init__(self, path_to_query_image: str, path_to_train_image: str, threshold: float = 0.7):
+    def __init__(self, path_to_query_image: str, path_to_train_image: str, path_output: str, threshold: float = 0.7):
         self.path_to_query_image = path_to_query_image
         self.path_to_train_image = path_to_train_image
+        self.path_output = path_output
         if not os.path.isfile(path_to_query_image):
             self.log.error(f"Can not find a file on path '{path_to_query_image}'.")
             sys.exit(f"Can not find a file on path '{path_to_query_image}'.")
@@ -184,6 +185,17 @@ class SearchObjectOnImage:
                       f"points: {[point['point'] for point in self.accepted_points]}")
         self.log.info(f"Rejected points found {len(self.rejected_points)}, "
                       f"points: {[point['point'] for point in self.rejected_points]}")
+        self.draw_results()
+
+    def draw_results(self):
+        image = cv2.imread(self.path_to_train_image)
+        h, w = self.get_size_query_image()
+        for pt in [point_dict['point'] for point_dict in self.rejected_points]:
+            cv2.rectangle(image, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+        for pt in [point_dict['point'] for point_dict in self.accepted_points]:
+            # blue rectangle
+            cv2.rectangle(image, pt, (pt[0] + w, pt[1] + h), (255, 0, 0), 2)
+        cv2.imwrite(self.path_output, image)
 
 
 def get_euclid_distance(point1: tuple, point2: tuple) -> float:

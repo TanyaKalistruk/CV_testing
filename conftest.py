@@ -1,9 +1,12 @@
+import glob
+import allure
 import pytest
+from allure_commons.types import AttachmentType
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from constants.search_request_constants import GOOGLE_MAPS
 from pages.base_page import BasePage
-from utils.helper import get_base_url_config
+from utils.helper import get_base_url_config, remove_search_results_files
 
 
 @pytest.fixture(scope="session")
@@ -12,7 +15,9 @@ def app():
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.set_window_size(1490, 690)
     base_url = get_base_url_config()
-    return BasePage(driver, base_url)
+    remove_search_results_files()
+    yield BasePage(driver, base_url)
+    driver.close()
 
 
 @pytest.fixture(scope="session")
@@ -23,3 +28,40 @@ def app_maps(app):
     app.search_page.send_search_request()
     app.search_page.click_on_search_result_by_text(GOOGLE_MAPS)
     return app
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item):
+    """
+        Hook the "item" object on a test failure
+    """
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, "rep_" + rep.when, rep)
+
+
+@pytest.fixture(autouse=True)
+def screenshot_on_failure(request, app):
+    """Make screenshot on a test failure."""
+    yield
+    if request.node.rep_setup.failed:
+        make_screenshot(app.driver, request.function.__name__)
+    elif request.node.rep_call.failed:
+        make_screenshot(app.driver, request.function.__name__)
+
+
+def make_screenshot(driver, function_name: str):
+    """Method for making a screenshot."""
+    files = glob.glob(f'../search_results/{function_name}.png')
+    if len(files) == 0:
+        allure.attach(driver.get_screenshot_as_png(),
+                      name=function_name,
+                      attachment_type=AttachmentType.PNG)
+    else:
+        with open(files[0], "rb") as image:
+            f = image.read()
+            b = bytearray(f)
+            allure.attach(b,
+                          name=function_name,
+                          attachment_type=AttachmentType.PNG)
+

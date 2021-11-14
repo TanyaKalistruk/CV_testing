@@ -1,10 +1,18 @@
 """Helper methods for tests."""
 import configparser
 import os
+import glob
 import re
 import sys
 
 from utils.search_object_on_image import SearchObjectOnImage
+
+
+def remove_search_results_files():
+    """Removes all image files with results of searching object that were created on previous test run."""
+    files = glob.glob('../search_results/*.png')
+    for file in files:
+        os.remove(file)
 
 
 def get_screenshot_name_by_address(address: str) -> str:
@@ -28,6 +36,11 @@ def get_file_path(package_name: str, file_name: str) -> str:
     return os.path.relpath(screen_path, pages_path)
 
 
+def get_current_test_name() -> str:
+    """Returns running test name."""
+    return os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
+
+
 def verify_location(address: str):
     """
     Verifies location by passed address.
@@ -39,7 +52,8 @@ def verify_location(address: str):
     file_name = get_screenshot_name_by_address(address)
     actual = get_file_path('test_screen', file_name)
     exp = get_file_path('test_data', file_name)
-    ob = SearchObjectOnImage(exp, actual)
+    output = get_file_path('search_results', get_current_test_name())
+    ob = SearchObjectOnImage(exp, actual, output)
     ob.search_obj_on_template()
     return len(ob.accepted_points) == 1
 
