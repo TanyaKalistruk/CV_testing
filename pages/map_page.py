@@ -13,9 +13,15 @@ class MapPage(Wrapper):
     def __init__(self, driver):
         super().__init__(driver)
 
-    def zoom_btn_click(self, click_count: int = 3):
+    def zoom_btn_click(self, click_count: int = 4):
         """Clicks on zoom button click_count times."""
         zoom_btn_element = self.find_element_by_css(ZOOM_BTN_CSS)
+        for _ in range(click_count):
+            zoom_btn_element.click()
+
+    def zoom_btn_unexist_click(self, click_count: int = 4):
+        """Clicks on zoom button click_count times."""
+        zoom_btn_element = self.find_element_by_css("unexist")
         for _ in range(click_count):
             zoom_btn_element.click()
 

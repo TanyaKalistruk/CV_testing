@@ -3,5 +3,3 @@ opencv-contrib-python==4.5.3
 pytest
 webdriver_manager
 logging
-inspect
-pillow

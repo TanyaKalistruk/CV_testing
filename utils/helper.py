@@ -5,7 +5,7 @@ import glob
 import re
 import sys
 
-from utils.search_object_on_image import SearchObjectOnImage
+from pages.search_object_on_image import SearchObjectOnImage
 
 
 def remove_search_results_files():

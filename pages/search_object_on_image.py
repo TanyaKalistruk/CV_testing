@@ -181,10 +181,10 @@ class SearchObjectOnImage:
             kp2, _ = self.sift_detect_train_img(pt)
             common_good_matches = self.get_common_good_matches(good_matches, kp1, kp2)
             self.is_point_accepted(pt, matches, good_matches, common_good_matches)
-        self.log.info(f"Accepted points found {len(self.accepted_points)}, "
-                      f"points: {[point['point'] for point in self.accepted_points]}")
-        self.log.info(f"Rejected points found {len(self.rejected_points)}, "
-                      f"points: {[point['point'] for point in self.rejected_points]}")
+        self.log.warning(f"Accepted points found {len(self.accepted_points)}, "
+                         f"points: {[point['point'] for point in self.accepted_points]}")
+        self.log.warning(f"Rejected points found {len(self.rejected_points)}, "
+                         f"points: {[point['point'] for point in self.rejected_points]}")
         self.draw_results()
 
     def draw_results(self):
