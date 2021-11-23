@@ -1,6 +1,6 @@
 import time
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
@@ -25,7 +25,7 @@ class Wrapper:
             element = self.driver.find_element(By.CSS_SELECTOR, selector)
             self.log.info(f"Element {selector} found successful")
             return element
-        except TimeoutError:
+        except TimeoutException:
             self.log.error(f"Element {selector} was not found during {timeout} timeout")
         except NoSuchElementException:
             self.log.error(f"Element {selector} not found")
@@ -38,7 +38,7 @@ class Wrapper:
             elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
             self.log.info(f"Element {selector} found successful")
             return elements
-        except TimeoutError:
+        except TimeoutException:
             self.log.error(f"Element {selector} was not found during {timeout} timeout")
         except NoSuchElementException:
             self.log.error(f"Element {selector} not found")

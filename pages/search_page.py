@@ -21,6 +21,10 @@ class SearchPage(Wrapper):
         """Clicks on Search button."""
         self.find_element_by_css(SEARCH_INP_CSS).send_keys(Keys.ENTER)
 
+    def send_search_request_unexist_field(self):
+        """Clicks on Search button by unexisting selector."""
+        self.find_element_by_css("unexist").send_keys(Keys.ENTER)
+
     def click_on_search_result_by_text(self, text: str):
         """Clicks on button by text."""
         elements = self.find_elements_by_css(ELEMENTS_IN_SEARCH_CSS)

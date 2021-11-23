@@ -19,12 +19,6 @@ class MapPage(Wrapper):
         for _ in range(click_count):
             zoom_btn_element.click()
 
-    def zoom_btn_unexist_click(self, click_count: int = 4):
-        """Clicks on zoom button click_count times."""
-        zoom_btn_element = self.find_element_by_css("unexist")
-        for _ in range(click_count):
-            zoom_btn_element.click()
-
     def search_the_address(self, address: str):
         """Clicks on zoom button click_count times."""
         search_field_element = self.find_element_by_css(SEARCH_FIELD_CSS)
