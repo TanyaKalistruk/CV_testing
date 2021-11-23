@@ -32,7 +32,7 @@ def test_search_kotsybynskogo_address(app_maps):
 
 def test_click_unexist_bth(app):
     """Negative test for sending data by not existing selector."""
-    with allure.step("Zoom the map."):
+    with allure.step("Search Google Maps."):
         app.go_to_google_search()
         app.search_page.write_in_search_field(GOOGLE_MAPS)
         app.search_page.send_search_request_unexist_field()
